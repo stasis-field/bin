@@ -1,0 +1,137 @@
+#! /bin/bash
+
+
+if [[ -z $1 ]];
+	then
+		echo "Usage as follows:";
+		echo "vignore_decrypt [filename] [encrypt_key]";
+	exit;
+fi
+
+if [ $1 == "-h" ];
+	then
+		echo "Usage as follows:";
+		echo "vignore_decrypt [filename] [encrypt_key]";
+	exit;
+fi
+
+#Variable definition:
+
+encrypt_key=$2
+cipherfile=$1
+key_length=$(echo $encrypt_key | awk '{print length}')
+counter=0
+
+
+
+declare -A char_decimal
+char_decimal[a]=0
+char_decimal[b]=1
+char_decimal[c]=2
+char_decimal[d]=3
+char_decimal[e]=4
+char_decimal[f]=5
+char_decimal[g]=6
+char_decimal[h]=7
+char_decimal[i]=8
+char_decimal[j]=9
+char_decimal[k]=10
+char_decimal[l]=11
+char_decimal[m]=12
+char_decimal[n]=13
+char_decimal[o]=14
+char_decimal[p]=15
+char_decimal[q]=16
+char_decimal[r]=17
+char_decimal[s]=18
+char_decimal[t]=19
+char_decimal[u]=20
+char_decimal[v]=21
+char_decimal[w]=22
+char_decimal[x]=23
+char_decimal[y]=24
+char_decimal[z]=25
+
+declare -A decimal_char
+decimal_char[0]=a
+decimal_char[1]=b
+decimal_char[2]=c
+decimal_char[3]=d
+decimal_char[4]=e
+decimal_char[5]=f
+decimal_char[6]=g
+decimal_char[7]=h
+decimal_char[8]=i
+decimal_char[9]=j
+decimal_char[10]=k
+decimal_char[11]=l
+decimal_char[12]=m
+decimal_char[13]=n
+decimal_char[14]=o
+decimal_char[15]=p
+decimal_char[16]=q
+decimal_char[17]=r
+decimal_char[18]=s
+decimal_char[19]=t
+decimal_char[20]=u
+decimal_char[21]=v
+decimal_char[22]=w
+decimal_char[23]=x
+decimal_char[24]=y
+decimal_char[25]=z
+
+
+
+
+
+
+#Create a working file from the encrypted file
+
+cp $cipherfile cipherfile.tmp
+
+
+#Remove whitespace and newlines and convert to lowercase
+
+cat cipherfile.tmp | tr -d "\n" > tmpfile && mv tmpfile cipherfile.tmp
+cat cipherfile.tmp | tr -d "[:blank:]" > tmpfile && mv tmpfile cipherfile.tmp
+cat cipherfile.tmp | tr [:upper:] [:lower:] > tmpfile && mv tmpfile cipherfile.tmp
+
+
+echo $'\n' >> decoded_output
+echo "|||||   ENCRYPT_KEY:$encrypt_key   $cipherfile:" >> decoded_output
+
+
+
+
+
+
+
+#Iterate through the working file by character and link the key to each character
+
+while read -n1 char;
+	do echo ${decimal_char[$(((${char_decimal[$char]}+(26-${char_decimal[${encrypt_key:$counter:1}]}))%26))]} >> decoded_output && cat decoded_output | tr -d "\n" > tmpfile && mv tmpfile decoded_output;
+	((counter=($counter+1)%$key_length));
+	done < cipherfile.tmp
+
+echo "   |||||" >> decoded_output
+
+	#Backup:
+	# while read -n1 char;
+	# 	do echo "$char""_COUNTER=$counter""_KEY=${encrypt_key:$counter:1}""_KEYVALUE=${char_decimal[${encrypt_key:$counter:1}]}""_INPUTVALUE=${char_decimal[$char]}""_DECODEDVALUE=$(((${char_decimal[$char]}+(26-${char_decimal[${encrypt_key:$counter:1}]}))%26))""_DECODED=${decimal_char[$(((${char_decimal[$char]}+(26-${char_decimal[${encrypt_key:$counter:1}]}))%26))]}" && echo ${decimal_char[$(((${char_decimal[$char]}+(26-${char_decimal[${encrypt_key:$counter:1}]}))%26))]} >> decoded_output && cat decoded_output | tr -d "\n" > tmpfile && mv tmpfile decoded_output;
+	# 	((counter=($counter+1)%$key_length));
+	# 	done < cipherfile.tmp
+
+
+#Decoded_value=(INPUTVALUE+(26-KEYVALUE))%26
+#		  (${char_decimal[$char]}+(26-${char_decimal[${encrypt_key:$counter:1}]}))%26
+
+#Remove temp file and cleanup variables
+
+echo "Decrypted file stored in decoded_output"
+
+unset encrypt_key
+unset cipherfile
+unset key_length
+unset counter
+
+rm cipherfile.tmp

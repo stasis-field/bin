@@ -1,0 +1,44 @@
+#!/bin/bash
+
+#Uses youtube-dl to download the highest quality audio and video
+#of a facebook video link as an mp4
+
+youtube-dl -F $1 > tmp.txt
+
+grep -o '[1234567890]\+a[ ]\+m4a[ ]\+audio only.*[1234567890]\+k' tmp.txt | cat > audstmp.txt
+cat audstmp.txt
+
+grep -o '[1234567890]\+v[ ]\+mp4[ ]\+[1234567890]\+x[1234567890]\+' tmp.txt | cat > vidstmp.txt
+cat vidstmp.txt
+
+#For implementing confirmable script
+#videoid=$(grep "$resolution" tmp.txt | grep -o '[1234567890]\+v')
+
+videoid=$(tail -n 1 vidstmp.txt | awk '{print $1}')
+
+#audioid=$(head -n 1 audstmp.txt | grep -o '[1234567890]\+a{1}')
+
+audioid=$(head -n 1 audstmp.txt | awk '{print $1}')
+
+
+combinedid="$videoid""+""$audioid"
+#combinedid="$audioid""+""$videoid"
+
+echo "$combinedid"
+
+
+youtube-dl -f "$combinedid" $1
+
+rm -I tmp.txt
+rm -I audstmp.txt
+rm -I vidstmp.txt
+
+
+
+###for youtube
+##
+#grep -n -o '[1234567890v]*[ ]\+mp4[ ]\+[1234567890]\+x[1234567890]\+[ ]\+[1234567890]*p' "$1"
+#
+#echo 'break'
+#
+#grep -n -o '[1234567890a]*[ ]\+m4a[ ]\+[1234567890qwertyuiopasdfghjklzxcvbnm ]\+[ ]\+[1234567890]*k' "$1"

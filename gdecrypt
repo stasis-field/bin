@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#ROT13
+
+err=1
+
+if [ $1 == -r ]; then echo "$2" | tr A-Za-z N-ZA-Mn-za-m; err=0; fi
+
+
+if [ $1 == -b ]; then echo "$2" | base64 -d; echo \n; err=0; fi
+
+
+if [ $err == 1 ]; then echo -e "\nERROR: No valid decrypt method specified.\nSyntax: gdecrypt <-r(ot13) OR -b(ase64)> <input>\n" && return 1; fi

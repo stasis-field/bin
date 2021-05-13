@@ -1,0 +1,31 @@
+#!/bin/bash
+
+find /home/scrith/* > /home/scrith/bin/mydb
+
+#diff -y --suppress-common-lines mydb mydbtmp
+
+#while read line1; do echo "$line1"; done < mydb
+#while read line2; do sed '/^$line2/a after=me' mydb; done < mydbtmp
+
+#linecount=$((1))
+
+#get rid of while and do for instead
+#while read line; do dateinfo="$(date -r "$line")";  sed -i "s/$/ $dateinfo/" mydb; echo $linecount; linecount=$((linecount + 1)); done < mydb
+startcount=1
+linetotal="$(wc -l /home/scrith/bin/mydb | awk '{print $1}')"
+
+#echo "line count is:  $linetotal"
+
+for i in $(eval echo "{$startcount..$linetotal}");
+do filepath=$(sed "${i}q;d" mydb);
+dateinfo="$(date -r "$filepath")";
+sed -i "s/$/ $dateinfo/" mydb;
+echo $i;
+done
+
+
+
+#rm /home/scrith/bin/mydb
+#mv /home/scrith/bin/mydbtmp /home/scrith/bin/mydb
+
+#find /home/scrith/* > /home/scrith/bin/mydb

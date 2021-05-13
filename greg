@@ -1,0 +1,84 @@
+#!/bin/bash
+
+
+#bin="/home/scrith/bin"
+#desk="/home/scrith/Desktop"
+
+#alias cdsk='cd ~/Desktop'
+#alias cdbn='cd ~/bin'
+
+
+############
+
+function gexist () {
+
+	local existence=0 # 0 is yes, 1 is no
+
+	if [ -d "$1" ]; then
+		existence=0;
+		echo "$1"" exists as a directory.";
+	
+	elif [ -f "$1" ]; then
+		existence=0;
+		echo "$1"" exists as a file.";
+	
+	else
+		existence=1;
+		echo "$1"" does not exist.";
+	
+	fi
+
+	echo $existence
+	return $existence
+
+}
+
+############
+
+function grm () {
+
+	local path=$(readlink -f "$1")
+
+	if [ -d "$path" ]; then
+		rm -d -I $path;
+		echo "$path WAS A DIRECTORY. REMOVED.";
+		
+	elif [ -f "$path" ]; then
+		rm -I $path;
+		echo "$path WAS A FILE. REMOVED."; else
+		echo "$path DOESN'T EXIST.";
+	fi
+
+}
+
+############
+
+function gpath () {
+
+	local path=$(readlink -f $1);
+	echo "$path";
+}
+
+############
+
+function gbatchupper () {
+
+	for i in $(find -name "$1"); do
+		echo Renamed "$i";
+		rename 'y/a-z/A-Z/' "$i";
+		echo to "$i";
+	done
+
+}
+
+############
+
+function gbatchlower () {
+
+	for i in $(find -name "$1"); do
+		echo Renamed "$i";
+		rename 'y/A-Z/a-z/' "$i";
+		echo to "$i";
+done
+
+}

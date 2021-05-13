@@ -1,0 +1,13 @@
+#! /bin/bash
+
+#Appends the date a file was last modified to the beginning of a file name
+
+raw_date="$(date -r "$1" "+%a_%m-%d-%Y_%H%M_")";
+new_filename="$raw_date""$1";
+
+#check if there is no second argument set, then change filename and exit
+[ -z "$2" ] && mv "$1" "$new_filename" && exit;
+
+#check if second argument is set, then apply change and
+#append second argument to beginning of date
+[ -n "$2" ] && new_filename="$2""_$raw_date""$1" && mv "$1" "$new_filename";

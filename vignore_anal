@@ -1,0 +1,42 @@
+#! /bin/bash
+
+
+#if argument 1 doesnt exist, print the help
+
+if [[ -z $1 ]];
+	then
+		echo ""
+		echo "Usage as follows:";
+		echo "vignore_anal [filename] [key_length]";
+		echo ""
+		echo "Current implementation adds 'head', which only lists the top 10 results for each key position"
+		echo ""
+	exit;
+fi
+
+
+#if argument 1 is "-h", print the help
+
+if [[ $1 == "-h" ]];
+	then
+		echo ""
+		echo "Usage as follows:";
+		echo "vignore_anal [filename] [key_length]";
+		echo ""
+		echo "Current implementation adds 'head', which only lists the top 10 results for each key position"
+		echo ""
+	exit;
+fi
+
+
+
+#variable definition
+
+key_length="$2"
+filename="$1"
+
+
+
+for ((i=1; i<="$key_length"; i++));
+	do fold -"$key_length" "$filename" | cut -b "$i" | sort | uniq -c | sort -nr | head && echo "";
+	done

@@ -1,0 +1,23 @@
+#!/bin/bash
+
+#echo "$#", "arguments" 		#gives number of arguments
+
+declare -A urls
+urls=( ["google"]="www.google.com" ["artsvision"]="https://av2.artsvision.net/KravisCtr/" ["shaybook"]="https://www.facebook.com/ShaylaSlonaker" ["shaytube"]="https://www.youtube.com/channel/UC0YAoUaDnCd3zKwC2AT4Lng" ["messages"]="https://messages.google.com/web/conversations" ["pastebin"]="https://pastebin.com/u/HotNeedle" ["news"]="https://www.smartnews.com/en/" ["scholar"]="https://scholar.google.com/" ["shaytok"]="https://www.tiktok.com/@salemnoir.tvma?lang=en")
+# "${urls[<keyword>]}" to expand them
+
+
+declare -A options
+options=( ["-p"]="--private-window" ["-w"]="--new-window" ["-t"]="--new-tab" )
+
+
+if [ $# -eq 1 ];then				#checks number of arguments given
+#	echo "one arg"
+	firefox "${urls[$1]}"			#only passes the url
+elif [ $# -eq 2 ];then
+#	echo "two args"
+	firefox "${options[$2]}" "${urls[$1]}" #passes url and option
+elif [ $# -eq 3 ];then
+#	echo "three args"
+	firefox "${options[$3]}" "${options[$2]}" "${urls[$1]}" #passes url and 2 options
+fi

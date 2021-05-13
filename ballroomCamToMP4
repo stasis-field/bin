@@ -1,0 +1,41 @@
+#!/bin/bash
+#README 
+#Run in terminal from your Panasonic Sources Folder
+
+#capitalize all of a certain filename with wildcard: Card* will find Card4 Card3 Cardf Cardl etc
+#for i in $(find -name 'CARD*'); do rename 'y/A-Z/a-z' "$i"; done
+
+
+for i in $(find -name CONTENTS); do
+contentspath=$(readlink -f "$i")
+exportdirectory=${contentspath/CONTENTS/CONTENTS\/PreviewExports}
+if [ -d "$exportdirectory" ]; then
+echo "Dir $exportdirectory exists. Carry on."; else
+mkdir "$exportdirectory"
+echo "Dir $exportdirectory created.";
+fi;
+done
+
+
+
+#Find the names and locations of each of the necessary files.
+#The Video mxf
+#The Audio Left mxf
+#The Audio Right mxf
+#The Final export file name and location
+#Save each to a variable so we can call them from within ffmpeg
+for i in $(find | grep VIDEO/); do
+videofile=$(readlink -f "$i")
+echo "$videofile"
+audiofileL_int=${videofile/.mxf/02.mxf}
+audiofileL=${audiofileL_int/VIDEO/AUDIO}
+echo "$audiofileL"
+audiofileR_int=${videofile/.mxf/03.mxf}
+audiofileR=${audiofileR_int/VIDEO/AUDIO}
+echo "$audiofileR"
+finalfile_int=${videofile/mxf/mp4}
+finalfile=${finalfile_int/\/CONTENTS\/VIDEO/PreviewExports}
+echo "$finalfile"
+#ffmpeg -i "$video"
+done
+

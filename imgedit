@@ -1,0 +1,22 @@
+#!/bin/bash
+
+#$1 is filename argument
+if [ -d ~/Downloads/tempfile ]; then
+rm tempfile; else
+echo "tempfile doesn't exist, continuing";
+fi
+
+if [ -d ~/Downloads/tempfile2 ]; then
+rm tempfile2; else
+echo "tempfile2 doesn't exist, continuing";
+fi
+
+xxd -b -c 1 "$1" > tempfile
+
+#mv tram2 mbytes=$(cat tempfile)
+
+sed 's/ ........ / 00000000 /g' tempfile > tempfile2
+
+#cat tempfile
+
+#"$bytes'
